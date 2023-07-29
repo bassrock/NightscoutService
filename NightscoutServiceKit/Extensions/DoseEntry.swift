@@ -16,7 +16,19 @@ extension DoseEntry {
 
         switch type {
         case .basal:
-            return nil
+            return TempBasalNightscoutTreatment(
+                timestamp: startDate,
+                enteredBy: source,
+                temp: .Absolute,  // DoseEntry only supports .absolute types
+                rate: 0,
+                absolute: unitsInDeliverableIncrements,
+                duration: endDate.timeIntervalSince(startDate),
+                amount: deliveredUnits,
+                automatic: automatic ?? false,
+                /* id: objectId, */ /// Specifying _id only works when doing a put (modify); all dose uploads are currently posting so they can be either create or update
+                syncIdentifier: syncIdentifier,
+                insulinType: insulinType?.brandName
+            )
         case .bolus:
             return BolusNightscoutTreatment(
                 timestamp: startDate,
